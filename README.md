@@ -36,7 +36,9 @@ MMDVMHost-Zig/
 Clone the repository and initialize the submodule:
 
 ```bash
-git clone https://github.com/blark/MMDVMHost-Zig.git
-cd MMDVMHost-Zig
+git clone https://github.com/blark/mmdvmhost-zig.git
+cd mmdvmhost-zig
 git submodule update --init --recursive
 ```
+
+and then you can build with `zig build` or to build for aarch64 `zig build -Dtarget=aarch64-linux-gnu`
