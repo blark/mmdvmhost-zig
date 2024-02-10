@@ -42,3 +42,5 @@ git submodule update --init --recursive
 ```
 
 and then you can build with `zig build` or to build for aarch64 `zig build -Dtarget=aarch64-linux-gnu`
+
+check `./zig-out/bin` for your binaries
