@@ -38,11 +38,12 @@ pub fn build(b: *std.Build) !void {
     const target_arch = if (target.cpu_arch) |cpu| @tagName(cpu) else "na";
     const target_abi = if (target.abi) |abi| @tagName(abi) else "na";
 
+    // output some debug info regarding the compile targets
     std.debug.print("Compiling on: {s}-{s}\n", .{ host_arch, host_os });
     // now the compile target to detect how we should set up library includes
     std.debug.print("Build target: {s}-{s}-{s}\n", .{ target_arch, target_os, target_abi });
 
-    // Compiler Flags
+    // Compiler flags taken from the original Makefile for mmvdmhost
     const mmdvm_cpp_cflags = [_][]const u8{
         "-g",
         "-O3",
@@ -57,16 +58,19 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
 
+    // Crete an array for the library dependencies
     var libs = ArrayList([]const u8).init(std.heap.page_allocator);
     defer libs.deinit();
     try libs.append("pthread");
     try libs.append("util");
 
+    // Check if we are building for our native arch
     if (mem.eql(u8, target_arch, "na") or mem.eql(u8, host_arch, target_arch) and mem.eql(u8, host_os, target_os)) {
         // we're building for the same cpu and architecture as the host
         try libs.append("samplerate");
     } else {
-        // building for a different architecture
+        // building for a different architecture - TODO: add conditions for other arhcitectures
+        // right now this only works for aarch64
         mmdvmHost.addIncludePath(.{ .path = "vendor/include" });
         mmdvmHost.addObjectFile(.{ .path = "vendor/lib/aarch64-linux-gnu/libsamplerate.so" });
     }
